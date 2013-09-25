@@ -1,0 +1,9 @@
+{
+    "include": [
+        "*.html",
+        "components/*.js",
+        "main.js",
+        "*.css",
+        "less/*.less"
+    ]
+}

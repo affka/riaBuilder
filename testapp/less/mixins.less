@@ -1,0 +1,6 @@
+.opacity(@opacity: 0.5) {
+    @opperc: @opacity * 100;
+
+    opacity: @opacity;
+    filter: ~"alpha(opacity=@{opperc})";
+}
