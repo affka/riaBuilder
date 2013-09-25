@@ -1,7 +1,15 @@
 {
     "include": [
         "*.html",
-        "components/*.js",
+        {
+            "type": "js",
+            "files": [
+                "components/*.js"
+            ],
+            "wrap": true,
+            "wrapEach": true,
+            "browser": "ie <9"
+        },
         "main.js",
         "*.css",
         "less/*.less"
