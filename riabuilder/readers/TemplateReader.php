@@ -2,6 +2,12 @@
 
 namespace riabuilder\readers;
 
+/**
+ * Class TemplateReader
+ *
+ * @author Vladimir Kozhin <affka@affka.ru>
+ * @package riabuilder\readers
+ */
 class TemplateReader extends BaseReader {
 
     /**
@@ -24,6 +30,7 @@ class TemplateReader extends BaseReader {
     }
 
     public function append($templates) {
+        // Compress html code, if need
         if ($this->builder->useCompress) {
             require_once __DIR__ . '/../vendors/minify/min/lib/Minify/HTML.php';
             foreach ($templates as &$html) {

@@ -4,6 +4,13 @@ namespace riabuilder\readers;
 
 use riabuilder\components\FileLoader;
 
+/**
+ * Class BaseReader. Base class for reader. Reader loaded,
+ * parse files and save it data to variable `result`.
+ *
+ * @author Vladimir Kozhin <affka@affka.ru>
+ * @package riabuilder\readers
+ */
 abstract class BaseReader {
 
     abstract public function getId();
@@ -99,7 +106,10 @@ abstract class BaseReader {
         $loader->root = $this->builder->rootPath;
         $loader->availableExtensions = ReaderType::getExtensions($this->getId());
 
-        $files = self::normalizeFilePath($this->files, $this->module->path);
+        // Get module or root path
+        $rootPath = $this->module ? $this->module->path : $this->builder->rootPath;
+
+        $files = self::normalizeFilePath($this->files, $rootPath);
         return $loader->load($files);
     }
 
@@ -120,11 +130,17 @@ abstract class BaseReader {
             return $file;
         }
 
-        if (substr($file, 0, 1) === '/') {
+        // Check absolute file path
+        if (file_exists($file)) {
+            return $file;
+        }
+
+        // Check file or dir mask from root path
+        if (substr($file, 0, 1) === '/' || substr($file, 1, 2) === ':/') {
             return ltrim($file, '/');
         }
 
-        // Remove `./`
+        // Remove `./` - other paths is relative of module
         if (substr($file, 0, 2) === './') {
             $file = substr($file, 2);
         }

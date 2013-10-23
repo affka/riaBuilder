@@ -2,6 +2,12 @@
 
 namespace riabuilder\readers;
 
+/**
+ * Class ReaderType. Enum with all reader types.
+ *
+ * @author Vladimir Kozhin <affka@affka.ru>
+ * @package riabuilder\readers
+ */
 class ReaderType {
 
     const JS = 'js';

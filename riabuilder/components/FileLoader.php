@@ -6,6 +6,7 @@ namespace riabuilder\components;
  * Class FileLoader
  * Load file or files list by mask
  *
+ * @author Vladimir Kozhin <affka@affka.ru>
  * @package riabuilder\components
  */
 class FileLoader {
@@ -47,12 +48,18 @@ class FileLoader {
 		foreach ($paths as $path) {
 			$recursive = false;
 
+            // Check load recursive
 			if (preg_match('/\*[^\/]*$/i', $path)) {
 				$path = dirname($path);
 				$recursive = true;
 			}
 
-			$files = array_merge($files, (array) $this->loadResource($this->getRootPath() . '/' . $path, $recursive));
+            // Prepend root path, if path is not absolute (check unix and windows style)
+            if (substr($path, 0, 1) !== '/' && substr($path, 1, 2) !== ':\\') {
+                $path = $this->getRootPath() . '/' . $path;
+            }
+
+			$files = array_merge($files, (array) $this->loadResource($path, $recursive));
 		}
 		return $files;
 	}

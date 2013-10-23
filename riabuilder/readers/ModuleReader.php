@@ -2,6 +2,12 @@
 
 namespace riabuilder\readers;
 
+/**
+ * Class ModuleReader
+ *
+ * @author Vladimir Kozhin <affka@affka.ru>
+ * @package riabuilder\readers
+ */
 class ModuleReader extends BaseReader {
 
     public $path;

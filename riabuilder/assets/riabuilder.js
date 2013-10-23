@@ -1,3 +1,7 @@
+/**
+ * JavaScript global class for manage package
+ * @author Vladimir Kozhin <affka@affka.ru>
+ */
 (function () {
 
     // Skip, if this script already included

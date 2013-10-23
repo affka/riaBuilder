@@ -2,6 +2,12 @@
 
 namespace riabuilder\readers;
 
+/**
+ * Class JavaScriptReader
+ *
+ * @author Vladimir Kozhin <affka@affka.ru>
+ * @package riabuilder\readers
+ */
 class JavaScriptReader extends BaseReader {
 
     /**
