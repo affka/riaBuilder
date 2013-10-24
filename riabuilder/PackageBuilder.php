@@ -16,6 +16,7 @@ use riabuilder\readers\ModuleReader;
  * Module is a directory with file `package.json`.
  *
  * @author Vladimir Kozhin <affka@affka.ru>
+ * @license MIT
  * @package riabuilder
  */
 class PackageBuilder {

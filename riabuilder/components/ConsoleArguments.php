@@ -1,5 +1,13 @@
 <?php
 
+namespace riabuilder\components;
+
+/**
+ * Class ConsoleArguments
+ * Class for work with console arguments
+ *
+ * @package riabuilder\components
+ */
 class ConsoleArguments {
 
     public static function parse($args) {

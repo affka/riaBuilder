@@ -9,6 +9,7 @@ use riabuilder\components\FileLoader;
  * parse files and save it data to variable `result`.
  *
  * @author Vladimir Kozhin <affka@affka.ru>
+ * @license MIT
  * @package riabuilder\readers
  */
 abstract class BaseReader {

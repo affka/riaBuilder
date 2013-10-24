@@ -4,6 +4,47 @@ PHP RIA Builder
 PHP Application for build html, css, less, js files to one file.
 Is very simplify method for compiling JavaScript application for production.
 
+What is it, example
+------------
+
+Suppose we have a simple application
+
+    #testapp/style_ie9.css
+    body {
+        color: red;
+    }
+
+    #testapp/main.js
+    function a(message) {
+        alert(message);
+    }
+
+Create package.json for build
+
+    {
+        "include": [
+            {
+                "type": "css",
+                "files": [
+                    "styles_ie9.css"
+                ],
+                "browser": "ie <9"
+            },
+            "*.js"
+        ]
+    }
+
+Build package, for example through the console
+
+    /var/www/riabuilder/run -c testapp
+
+Compile result
+
+    #testapp.js
+    ...
+    if (RIABuilder.matchBrowser("ie <9")){RIABuilder.appendStyle("body {color: red;}");} function a(m) {alert(m);}
+
+
 Features
 ------------
 
@@ -13,6 +54,7 @@ Features
 - Include js/css/template by browser condition
 - Dynamic build and return package
 - Build package from command line
+- Manually load packages from frontend
 
 How to use
 ------------
@@ -94,7 +136,7 @@ Format:
 
 Flags:
 - `-c` or `--useCompress` Enabled compress js, css and html for production mode
-	
+
 Attributes:
 - `modulePath` Relative path to module dir or package.json file. Examples: dir, dir/subdir, dir/mypackage.json. If set dir, then by default will be fined file `package.json`.
 - `savePath` (optional) Relative path to save file. By default will be used modulePath without special chars. Example: dir/testapp -> dir_testapp.js.
@@ -131,3 +173,8 @@ Example:
     echo $packageBuilder->readModule('testapp');
 
 
+Requirements
+------------
+
+- Server: PHP 5.3 or latest
+- Client: browser ie >8 and last versions of opera, chrome, safari, firefox

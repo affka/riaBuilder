@@ -6,6 +6,7 @@ namespace riabuilder\readers;
  * Class ReaderType. Enum with all reader types.
  *
  * @author Vladimir Kozhin <affka@affka.ru>
+ * @license MIT
  * @package riabuilder\readers
  */
 class ReaderType {

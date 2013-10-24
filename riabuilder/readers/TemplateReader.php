@@ -6,6 +6,7 @@ namespace riabuilder\readers;
  * Class TemplateReader
  *
  * @author Vladimir Kozhin <affka@affka.ru>
+ * @license MIT
  * @package riabuilder\readers
  */
 class TemplateReader extends BaseReader {

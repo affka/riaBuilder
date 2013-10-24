@@ -7,6 +7,7 @@ namespace riabuilder\components;
  * Load file or files list by mask
  *
  * @author Vladimir Kozhin <affka@affka.ru>
+ * @license MIT
  * @package riabuilder\components
  */
 class FileLoader {

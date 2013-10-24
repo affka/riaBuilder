@@ -6,6 +6,7 @@ namespace riabuilder\readers;
  * Class LessReader
  *
  * @author Vladimir Kozhin <affka@affka.ru>
+ * @license MIT
  * @package riabuilder\readers
  */
 class LessReader extends BaseReader {

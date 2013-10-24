@@ -1,6 +1,7 @@
 /**
  * JavaScript global class for manage package
  * @author Vladimir Kozhin <affka@affka.ru>
+ * @license MIT
  */
 (function () {
 
@@ -133,6 +134,11 @@
             return true;
         },
 
+        /**
+         * Manually load module from JavaScript
+         * @param {string} path Relative path to module dir or package.json file
+         * @param {function} [callback]
+         */
         loadModule: function (path, callback) {
             var script = document.createElement('script');
             var loaded = false;

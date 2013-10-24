@@ -19,8 +19,7 @@ require_once __DIR__ . '/PackageBuilder.php';
 \riabuilder\PackageBuilder::registerAutoloader();
 
 // Parse arguments
-require_once __DIR__ . '/components/ConsoleArguments.php';
-$params = ConsoleArguments::parse($argv);
+$params = \riabuilder\components\ConsoleArguments::parse($argv);
 $files = array_merge($params['arguments'], $params['commands']);
 
 // Create package builder instance
@@ -38,7 +37,7 @@ if (count($files) === 0) {
 $jsCode = $packageBuilder->readModule($files[0]);
 
 // Save result in file
-$savePath = isset($files[1]) ? $files[1] : preg_replace('/[^a-z0-9-_]i/', '', $files[0]) . '.js';
+$savePath = isset($files[1]) ? $files[1] : preg_replace('/[^a-z0-9-_]i/', '', $files[0]) . ($packageBuilder->useCompress ? '_min' : '') . '.js';
 file_put_contents($packageBuilder->rootPath . '/' . $savePath, $jsCode);
 
 exit(0);

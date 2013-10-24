@@ -8,6 +8,7 @@ use riabuilder\components\FileLoader;
  * Class CssReader
  *
  * @author Vladimir Kozhin <affka@affka.ru>
+ * @license MIT
  * @package riabuilder\readers
  */
 class CssReader extends BaseReader {
