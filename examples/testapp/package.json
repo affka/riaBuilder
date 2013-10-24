@@ -11,7 +11,13 @@
             "browser": "ie <9"
         },
         "main.js",
-        "*.css",
+        {
+            "type": "css",
+            "files": [
+                "*.css"
+            ],
+            "browser": "ie <9"
+        },
         "less/*.less"
     ]
 }

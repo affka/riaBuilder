@@ -20,13 +20,29 @@ use riabuilder\readers\ModuleReader;
  */
 class PackageBuilder {
 
+    /**
+     * Absolute path to root of javascript applications. Relative to that directory will be searched you modules.
+     * @type string
+     */
     public $rootPath;
+
+    /**
+     * Enable compressing js, css and html.
+     * @type boolean
+     */
     public $useCompress = false;
 
+    /**
+     * Globally register riaBuilder autoloader
+     */
     public static function registerAutoloader() {
         spl_autoload_register(__CLASS__ . '::autoloader');
     }
 
+    /**
+     * Auto require class from namespace `riabuilder`
+     * @param $class
+     */
     public static function autoloader($class) {
         if (strpos($class, 'riabuilder') === 0) {
             $class = str_replace('riabuilder\\', '', $class);

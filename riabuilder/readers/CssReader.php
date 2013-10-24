@@ -17,6 +17,8 @@ class CssReader extends BaseReader {
      */
     public $files = array();
 
+    public $browser;
+
     public function getId() {
         return ReaderType::CSS;
     }
@@ -42,7 +44,16 @@ class CssReader extends BaseReader {
                 $cssRules = $CSSmin->run($cssRules);
             }
 
-            $this->result .= "RIABuilder.appendStyle(" . \json_encode($cssRules) . ");" . $this->getEndLineBreak();
+            $script = "RIABuilder.appendStyle(" . \json_encode($cssRules) . ");" . $this->getEndLineBreak();
+
+            // Add styles as script via JavaScriptReader
+            $javaScriptReader = new JavaScriptReader($this->builder, $this->module);
+            $javaScriptReader->configure($this->getParams(array(
+                'browser',
+            )));
+            $javaScriptReader->append($script);
+
+            $this->result .= $javaScriptReader->getResult();
         }
     }
 

@@ -15,6 +15,8 @@ class TemplateReader extends BaseReader {
      */
     public $files = array();
 
+    public $browser;
+
     public function getId() {
         return ReaderType::TEMPLATE;
     }
@@ -38,7 +40,16 @@ class TemplateReader extends BaseReader {
             }
         }
 
-        $this->result .= "RIABuilder.appendTemplates(" . \json_encode($templates) . ");" . $this->getEndLineBreak();
+        $script = "RIABuilder.appendTemplates(" . \json_encode($templates) . ");" . $this->getEndLineBreak();
+
+        // Add html as script via JavaScriptReader
+        $javaScriptReader = new JavaScriptReader($this->builder, $this->module);
+        $javaScriptReader->configure($this->getParams(array(
+            'browser',
+        )));
+        $javaScriptReader->append($script);
+
+        $this->result .= $javaScriptReader->getResult();
     }
 
 }
