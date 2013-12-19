@@ -30,7 +30,11 @@ class ModuleReader extends BaseReader {
     }
 
     public function load() {
-        $packageFilePath = self::normalizePackageFilePath($this->path);
+	    // Get module or root path
+	    $rootPath = $this->module ? $this->module->path : $this->builder->rootPath;
+	    $this->path = self::normalizeFilePath($this->path, $rootPath);
+
+	    $packageFilePath = self::normalizePackageFilePath($this->path);
         $this->path = dirname($packageFilePath);
 
         // Load

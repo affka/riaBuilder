@@ -4,6 +4,7 @@
  * Builder console bootstrap file
  * Available options:
  *  - useCompress
+ *  - rootPath
  *
  * Available flags:
  *  - c useCompress
@@ -24,7 +25,7 @@ $files = array_merge($params['arguments'], $params['commands']);
 
 // Create package builder instance
 $packageBuilder = new \riabuilder\PackageBuilder();
-$packageBuilder->rootPath = !empty($params['options']['useCompress']) ? $params['options']['useCompress'] : getcwd();
+$packageBuilder->rootPath = !empty($params['options']['rootPath']) ? $params['options']['rootPath'] : getcwd();
 $packageBuilder->useCompress = !empty($params['options']['useCompress']) || in_array('c', $params['flags']);
 
 // Check required argument - module relative path
