@@ -74,7 +74,7 @@ class TemplateReader extends BaseReader {
 
 		$data = array();
 		foreach ($filesData as $path => $html) {
-			$path = str_replace($nameRootPath . '/', '', $rootPath . '/' . $path);
+			$path = str_replace($nameRootPath . '/', '', $this->builder->rootPath . '/' . $path);
 
 			$data[$path] = $html;
 		}
