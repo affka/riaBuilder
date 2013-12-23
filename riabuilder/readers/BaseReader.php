@@ -103,15 +103,15 @@ abstract class BaseReader {
      * @return array
      */
     protected function loadFilesData() {
-        $loader = new FileLoader();
-        $loader->root = $this->builder->rootPath;
-        $loader->availableExtensions = ReaderType::getExtensions($this->getId());
+	    // Get module or root path
+	    $rootPath = $this->module ? $this->module->path : $this->builder->rootPath;
 
-        // Get module or root path
-        $rootPath = $this->module ? $this->module->path : $this->builder->rootPath;
+	    $loader = new FileLoader();
+	    $loader->root = $rootPath;
+	    $loader->availableExtensions = ReaderType::getExtensions($this->getId());
 
-        $files = self::normalizeFilePath($this->files, $rootPath);
-        return $loader->load($files);
+	    $files = self::normalizeFilePath($this->files, $rootPath);
+	    return $loader->load($files);
     }
 
     /**

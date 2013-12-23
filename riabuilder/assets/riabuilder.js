@@ -5,10 +5,7 @@
  */
 (function () {
 
-    // Skip, if this script already included
-    if (window.RIABuilder) {
-        return;
-    }
+    var previousRIABuilder = window.RIABuilder;
 
     // Set RIABuilder as global static class
     var RIABuilder = window.RIABuilder = {
@@ -24,6 +21,16 @@
 
         init: function (config) {
             this._config = config;
+        },
+
+        noConflict: function() {
+            if (previousRIABuilder) {
+                window.RIABuilder = previousRIABuilder;
+            } else {
+                delete window.RIABuilder;
+            }
+
+            return this;
         },
 
         /**
