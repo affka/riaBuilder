@@ -29,19 +29,21 @@ class LessReader extends BaseReader {
     }
 
     public function load() {
-        // Load less files
-        $filesData = $this->loadFilesData();
+	    // Load less files
+	    $filesData = $this->loadFilesData();
 
-        $cssReader = new CssReader($this->builder, $this->module);
-        foreach ($filesData as $relativePath => $lessData) {
-            $this->lessCompiler->setImportDir(array(
-                $this->module->getAbsolutePath(),
-                dirname($relativePath),
-            ));
-            $cssReader->append($this->lessCompiler->compile($lessData));
-        }
+	    foreach ($filesData as $relativePath => $lessData) {
+		    $this->lessCompiler->setImportDir(array(
+			    $this->module->getAbsolutePath(),
+			    dirname($relativePath),
+		    ));
+	    }
+	    $lessData = implode('', array_values($filesData));
 
-        $this->result .= $cssReader->getResult();
+	    $cssReader = new CssReader($this->builder, $this->module);
+	    $cssReader->append($this->lessCompiler->compile($lessData));
+
+	    $this->result .= $cssReader->getResult();
     }
 
 }
