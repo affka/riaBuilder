@@ -9,65 +9,78 @@ namespace riabuilder\readers;
  * @license MIT
  * @package riabuilder\readers
  */
-class ModuleReader extends BaseReader {
-
-    public $path;
-    public $include = array();
-
-    public $wrap = false;
-    public $wrapEach = false;
+class ModuleReader extends JavaScriptReader {
 
     public function getId() {
         return ReaderType::MODULE;
     }
 
-    public function getPath() {
-        return $this->path;
-    }
-
-    public function getAbsolutePath() {
-        return $this->builder->rootPath . '/' . $this->path;
-    }
-
     public function load() {
-	    // Get module or root path
-	    $rootPath = $this->module ? $this->module->path : $this->builder->rootPath;
-	    $this->path = self::normalizeFilePath($this->path, $rootPath);
-
-	    $packageFilePath = self::normalizePackageFilePath($this->path);
-        $this->path = dirname($packageFilePath);
+        // Load js files
+        $filesData = $this->loadFilesData();
 
         // Load
-        $data = self::loadJson($packageFilePath);
-        $this->include = isset($data['include']) ? (array) $data['include'] : array();
-        $this->include = self::normalizeIncludeFormat($this->include);
+        $jsonData = array();
+        foreach ($filesData as $file => $data) {
+            $relativePath = dirname($file);
+            if ($relativePath === '.') {
+                $relativePath = '';
+            }
 
-        $this->processInclude();
+            $jsonData[$relativePath] = self::parseJson($data);
+        }
+
+        $this->loadData($jsonData);
     }
 
-    public function processInclude() {
-        foreach ($this->include as $params) {
-            if (empty($params['type'])) {
-                throw new \Exception('Not find type for module `' . $this->path . '`, section `' . json_encode($params) . '`.');
+    public function loadData($filesData) {
+        $allJsCode = '';
+
+        foreach ($filesData as $relativePath => $jsonData) {
+            $include = isset($jsonData['include']) ? (array) $jsonData['include'] : array();
+            $jsCode = $this->processInclude($relativePath, $include, !empty($jsonData['wrapEach']));
+
+            if ($this->wrapEach || !empty($jsonData['wrap'])) {
+                $jsCode = $this->wrapScript($jsCode);
+            }
+            $allJsCode .= $jsCode;
+        }
+
+        if ($this->wrap) {
+            $allJsCode = $this->wrapScript($allJsCode);
+        }
+        $this->result .= $allJsCode;
+    }
+
+    public function processInclude($relativePath, $include, $wrapEach = false) {
+        $include = self::normalizeIncludeFormat($include);
+        $jsCode = '';
+
+        foreach ($include as $params) {
+            /** @type riabuilder/readers/BaseReader */
+            $className = ReaderType::getClassName($params['type']);
+
+            if ($className === null) {
+                throw new \Exception('Not find type for module `' . $this->getAbsolutePath() . '`, section `' . json_encode($params) . '`.');
             }
 
             // Create reader instance
-            $className = ReaderType::getClassName($params['type']);
-            $reader = new $className($this->builder, $this);
-
-            // Extend global params
-            $reader->configure($this->getParams(array(
-                'wrap',
-                'wrapEach',
-            )));
+            $reader = new $className($this->builder, $relativePath);
 
             // Set custom params
             $reader->configure($params);
 
             // Run reader logic
             $reader->load();
-            $this->result .=  $reader->getResult();
+
+            $script = $reader->getResult();
+            if ($wrapEach) {
+                $script = $this->wrapScript($script);
+            }
+            $jsCode .= $script;
         }
+
+        return $jsCode;
     }
 
     public static function normalizeIncludeFormat(array $include) {
@@ -91,35 +104,30 @@ class ModuleReader extends BaseReader {
 
     /**
      * Load and parse json file. Check exists and validate parsing
-     * @param string $file
+     * @param string $stringData
      * @return string|array
      * @throws \Exception
      */
-    public static function loadJson($file) {
-        // Read
-        $value = file_get_contents($file);
-        if ($value === false) {
-            throw new \Exception('Cannot read file ' . $file);
-        }
-
+    public static function parseJson($stringData) {
         // Decode
-        $result = json_decode($value, true);
+        $result = json_decode($stringData, true);
         if ($result === null) {
-            throw new \Exception('Corrupted JSON in ' . $file);
+            throw new \Exception('Corrupted JSON in ' . $stringData);
         }
 
         return $result;
     }
 
-    protected static function normalizePackageFilePath($path) {
-        $path = trim($path, '/');
+    protected static function normalizeFilePath($file, $moduleAbsolutePath) {
+        $file = parent::normalizeFilePath($file, $moduleAbsolutePath);
+        $file = rtrim($file, '/');
 
         // Append /package.json, if no set custom
-        if (substr($path, -5) !== '.json') {
-            $path .= '/package.json';
+        if (substr($file, -5) !== '.json') {
+            $file .= '/package.json';
         }
 
-        return $path;
+        return $file;
     }
 
 }

@@ -14,6 +14,11 @@ use riabuilder\components\FileLoader;
  */
 abstract class BaseReader {
 
+    /**
+     * @type array
+     */
+    public $files = array();
+
     abstract public function getId();
 
     abstract public function load();
@@ -24,20 +29,25 @@ abstract class BaseReader {
     protected $builder;
 
     /**
-     * @type \riabuilder\readers\ModuleReader
+     * @type string
      */
-    protected $module;
-
     protected $result = '';
 
-    public function __construct($builder, $module) {
+    /**
+     * @type boolean
+     */
+    protected $isInitialized = false;
+
+    /**
+     * @type string
+     */
+    private $relativePath;
+
+    public function __construct($builder, $relativePath = '') {
         $this->builder = $builder;
-        $this->module = $module;
+        $this->relativePath = $relativePath;
 
         $this->init();
-    }
-
-    public function init() {
     }
 
     public function getResult() {
@@ -79,8 +89,19 @@ abstract class BaseReader {
         return $values;
     }
 
+    protected function init() {
+    }
+
     protected function getEndLineBreak() {
         return $this->builder->useCompress ? "" : "\n\n";
+    }
+
+    protected function getRelativePath() {
+        return $this->relativePath;
+    }
+
+    protected function getAbsolutePath() {
+        return $this->builder->rootPath . ($this->relativePath ? '/' . $this->relativePath : '');
     }
 
     /**
@@ -108,8 +129,13 @@ abstract class BaseReader {
 	    $loader->availableExtensions = ReaderType::getExtensions($this->getId());
 
 	    // Get module or root path
-	    $rootPath = $this->module ? $this->module->path : $this->builder->rootPath;
-	    $files = self::normalizeFilePath($this->files, $rootPath);
+	    //$rootPath = $this->module ? $this->module->path : $this->builder->rootPath;
+	    //$files = self::normalizeFilePath($this->files, $this->getAbsolutePath());
+
+        $files = array();
+        foreach ((array) $this->files as $file) {
+            $files[] = static::normalizeFilePath($file, $this->getAbsolutePath());
+        }
 
 	    return $loader->load($files);
     }
@@ -120,17 +146,10 @@ abstract class BaseReader {
      *  - ./aa/bb.js The same of relative path
      *  - /aa/bb.js Root dir is base path (see module params)
      * @param array|string $file
-     * @param string $modulePath
+     * @param string $moduleAbsolutePath
      * @return string
      */
-    protected static function normalizeFilePath($file, $modulePath) {
-        if (is_array($file)) {
-            foreach ($file as &$fileItem) {
-                $fileItem = self::normalizeFilePath($fileItem, $modulePath);
-            }
-            return $file;
-        }
-
+    protected static function normalizeFilePath($file, $moduleAbsolutePath) {
         // Check absolute file path
         if (file_exists($file)) {
             return $file;
@@ -146,7 +165,7 @@ abstract class BaseReader {
             $file = substr($file, 2);
         }
 
-        return $modulePath . '/' . $file;
+        return $moduleAbsolutePath . '/' . $file;
     }
 
 }

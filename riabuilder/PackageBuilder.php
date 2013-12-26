@@ -33,6 +33,8 @@ class PackageBuilder {
      */
     public $useCompress = false;
 
+    public $excludeRiaBuilderJs = false;
+
     /**
      * Globally register riaBuilder autoloader
      */
@@ -58,19 +60,25 @@ class PackageBuilder {
      * @return string JavaScript code
      */
     public function readModule($path) {
-        // Load root RIABuilder scripts and append to package at first
-        $jsReader = new JavaScriptReader($this, null);
-        $jsReader->files = array(
-            __DIR__ . '/assets/riabuilder.js',
-        );
-        $jsReader->load();
+        $jsCode = '';
+
+        if (!$this->excludeRiaBuilderJs) {
+            // Load root RIABuilder scripts and append to package at first
+            $jsReader = new JavaScriptReader($this);
+            $jsReader->files = array(
+                __DIR__ . '/assets/riabuilder.js',
+            );
+            $jsReader->load();
+            $jsCode .= $jsReader->getResult();
+        }
 
         // Load module files
-        $reader = new ModuleReader($this, null);
-        $reader->path = $path;
+        $reader = new ModuleReader($this);
+        $reader->files = array($path);
         $reader->load();
+        $jsCode .= $reader->getResult();
 
-        return $jsReader->getResult() . $reader->getResult();
+        return $jsCode;
     }
 
 }

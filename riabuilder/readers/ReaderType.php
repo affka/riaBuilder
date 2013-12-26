@@ -20,24 +20,24 @@ class ReaderType {
     protected static function getData() {
         return array(
             self::JS => array(
-                'className' => 'riabuilder\Readers\JavaScriptReader',
+                'className' => 'riabuilder\readers\JavaScriptReader',
                 'extensions' => array('js'),
             ),
             self::CSS => array(
-                'className' => 'riabuilder\Readers\CssReader',
+                'className' => 'riabuilder\readers\CssReader',
                 'extensions' => array('css'),
             ),
             self::LESS => array(
-                'className' => 'riabuilder\Readers\LessReader',
+                'className' => 'riabuilder\readers\LessReader',
                 'extensions' => array('less'),
             ),
             self::TEMPLATE => array(
-                'className' => 'riabuilder\Readers\TemplateReader',
+                'className' => 'riabuilder\readers\TemplateReader',
                 'extensions' => array('htm', 'html'),
             ),
             self::MODULE => array(
-                'className' => 'riabuilder\Readers\ModuleReader',
-                'extensions' => array(),
+                'className' => 'riabuilder\readers\ModuleReader',
+                'extensions' => array('json'),
             ),
         );
     }

@@ -13,11 +13,6 @@ use riabuilder\components\FileLoader;
  */
 class CssReader extends BaseReader {
 
-    /**
-     * @type array
-     */
-    public $files = array();
-
     public $browser;
 
     public function getId() {
@@ -31,8 +26,12 @@ class CssReader extends BaseReader {
         // Append to package css
         if (count($filesData) > 0) {
             $css = implode("\n\n", array_values($filesData));
-            $this->append($css);
+            $this->loadData($css);
         }
+    }
+
+    public function loadData($css) {
+        $this->append($css);
     }
 
     public function append($cssRules) {
@@ -48,7 +47,7 @@ class CssReader extends BaseReader {
             $script = "RIABuilder.appendStyle(" . \json_encode($cssRules) . ");" . $this->getEndLineBreak();
 
             // Add styles as script via JavaScriptReader
-            $javaScriptReader = new JavaScriptReader($this->builder, $this->module);
+            $javaScriptReader = new JavaScriptReader($this->builder, $this->getRelativePath());
             $javaScriptReader->configure($this->getParams(array(
                 'browser',
             )));

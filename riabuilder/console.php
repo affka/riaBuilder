@@ -6,8 +6,9 @@
  *  - useCompress
  *  - rootPath
  *
- * Available flags:
+ * Available short flags:
  *  - c useCompress
+ *  - p rootPath
  *
  * Last arguments:
  *  1. Relative path to module

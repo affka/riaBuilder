@@ -39,11 +39,15 @@ class TemplateReader extends BaseReader {
 		// Append templates
 		if (count($filesData) > 0) {
 			$filesData = $this->normalizeTemplatesPath($filesData);
-			$this->append($filesData);
+			$this->loadData($filesData);
 		}
 	}
 
-	public function append($templates) {
+    public function loadData(array $templates) {
+        $this->append($templates);
+    }
+
+	public function append(array $templates) {
 		// Compress html code, if need
 		if ($this->builder->useCompress) {
 			require_once __DIR__ . '/../vendors/minify/min/lib/Minify/HTML.php';
@@ -55,7 +59,7 @@ class TemplateReader extends BaseReader {
 		$script = "RIABuilder.appendTemplates(" . \json_encode($templates) . ");" . $this->getEndLineBreak();
 
 		// Add html as script via JavaScriptReader
-		$javaScriptReader = new JavaScriptReader($this->builder, $this->module);
+		$javaScriptReader = new JavaScriptReader($this->builder, $this->getRelativePath());
 		$javaScriptReader->configure($this->getParams(array(
 			'browser',
 		)));
@@ -69,8 +73,7 @@ class TemplateReader extends BaseReader {
 			return $filesData;
 		}
 
-		$rootPath = $this->module ? $this->module->path : $this->builder->rootPath;
-		$nameRootPath = self::normalizeFilePath($this->searchPath, $rootPath);
+		$nameRootPath = self::normalizeFilePath($this->searchPath, $this->getAbsolutePath());
 
 		$data = array();
 		foreach ($filesData as $path => $html) {

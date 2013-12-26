@@ -100,7 +100,7 @@ See package.json format example:
                 "type": "module",
 
                 // Relative path to module dir or package.json file
-                "path": "module/customapp",
+                "files": "module/customapp",
 
                 // Set this params as default for module
                 "wrap": false,
@@ -132,10 +132,11 @@ See package.json format example:
 
 Format:
 
-    run.bat [-c] modulePath [savePath]
+    run.bat [-c][-p] modulePath [savePath]
 
 Flags:
 - `-c` or `--useCompress` Enabled compress js, css and html for production mode
+- `-p` or `--rootPath` Absolute path to root of javascript applications
 
 Attributes:
 - `modulePath` Relative path to module dir or package.json file. Examples: dir, dir/subdir, dir/mypackage.json. If set dir, then by default will be fined file `package.json`.
@@ -177,4 +178,4 @@ Requirements
 ------------
 
 - Server: PHP 5.3 or latest
-- Client: browser ie >8 and last versions of opera, chrome, safari, firefox
+- Client: Tested on browsers ie >8 and last versions of opera, chrome, safari, firefox

@@ -24,12 +24,7 @@
         },
 
         noConflict: function() {
-            if (previousRIABuilder) {
-                window.RIABuilder = previousRIABuilder;
-            } else {
-                delete window.RIABuilder;
-            }
-
+            window.RIABuilder = previousRIABuilder;
             return this;
         },
 
@@ -92,7 +87,7 @@
 
         /**
          * Match browser and it version
-         * @param {string} name
+         * @param {string} name Example: ie <9
          * @returns {boolean}
          */
         matchBrowser: function (name) {

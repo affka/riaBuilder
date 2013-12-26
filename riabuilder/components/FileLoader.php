@@ -97,13 +97,17 @@ class FileLoader {
 			if (is_string($this->availableExtensions)) {
 				$this->availableExtensions = explode(',', $this->availableExtensions);
 			}
-			if (is_array($this->availableExtensions) && !in_array($extension, $this->availableExtensions)) {
+			if (is_array($this->availableExtensions) && count($this->availableExtensions) > 0 && !in_array($extension, $this->availableExtensions)) {
 				return null;
 			}
 
 			// Get related path
 			$relatedPath = str_replace($this->root, '', $dir);
 			$relatedPath = trim($relatedPath, '/');
+
+            if (!file_exists($dir)) {
+                throw new \Exception('Not found file `' . $dir . '`');
+            }
 
 			return array($relatedPath => file_get_contents($dir));
 		}

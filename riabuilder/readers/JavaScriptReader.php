@@ -12,11 +12,6 @@ namespace riabuilder\readers;
 class JavaScriptReader extends BaseReader {
 
     /**
-     * @type array
-     */
-    public $files = array();
-
-    /**
      * @type string|null
      */
     public $browser;
@@ -35,28 +30,35 @@ class JavaScriptReader extends BaseReader {
         // Wrap each scripts, if need
         if ($this->wrapEach) {
             foreach ($filesData as &$scriptItem) {
-                $scriptItem = self::wrapScript($scriptItem);
+                $scriptItem = $this->wrapScript($scriptItem);
             }
+        }
 
+        // End script symbol - always `;`
+        $scripts = array();
+        foreach (array_values($filesData) as $script) {
+            $script = rtrim(trim($script), ';') . ';';
+            $scripts[] = $script;
         }
 
         // Append to result
-        $script = implode("\n\n", array_values($filesData));
+        $this->loadData(implode('', $scripts));
+    }
+
+    public function loadData($script) {
         $this->append($script);
     }
 
     public function append($script) {
-        // End script symbol - always `;`
-        $script = rtrim(trim($script), ';') . ';';
-
         // Wrap in browser condition, if set browser
         if ($this->browser !== null) {
+            // @todo Match browser syntax
             $script = self::wrapBrowserMatch($script, $this->browser);
         }
 
         // Wrap scripts block, if need
         if ($this->wrap) {
-            $script = self::wrapScript($script);
+            $script = $this->wrapScript($script);
         }
 
         if ($this->builder->useCompress) {
@@ -82,8 +84,10 @@ class JavaScriptReader extends BaseReader {
      * @param string $script
      * @return string
      */
-    protected static function wrapScript($script) {
-        return "(function() {\n\t" . str_replace("\n", "\n\t", $script) . "\n})();";
+    protected function wrapScript($script) {
+        return $this->builder->useCompress ?
+            "(function(){" . $script . "})();" :
+            "(function() {\n\t" . str_replace("\n", "\n\t", $script) . "\n})();";
     }
 
 }

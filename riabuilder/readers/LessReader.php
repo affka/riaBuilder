@@ -11,11 +11,6 @@ namespace riabuilder\readers;
  */
 class LessReader extends BaseReader {
 
-    /**
-     * @type array
-     */
-    public $files = array();
-
     private $lessCompiler;
 
     public function init() {
@@ -31,19 +26,26 @@ class LessReader extends BaseReader {
     public function load() {
 	    // Load less files
 	    $filesData = $this->loadFilesData();
+        foreach (array_keys($filesData) as $relativePath) {
+            $this->setImportDir($relativePath);
+        }
 
-	    foreach ($filesData as $relativePath => $lessData) {
-		    $this->lessCompiler->setImportDir(array(
-			    $this->module->getAbsolutePath(),
-			    dirname($relativePath),
-		    ));
-	    }
-	    $lessData = implode('', array_values($filesData));
+        $lessData = implode("\n", array_values($filesData));
+        $this->loadData($lessData);
+    }
 
-	    $cssReader = new CssReader($this->builder, $this->module);
-	    $cssReader->append($this->lessCompiler->compile($lessData));
+    public function loadData($lessData) {
+        $cssReader = new CssReader($this->builder, $this->getRelativePath());
+        $cssReader->loadData($this->lessCompiler->compile($lessData));
 
-	    $this->result .= $cssReader->getResult();
+        $this->result .= $cssReader->getResult();
+    }
+
+    public function setImportDir($dir) {
+        $this->lessCompiler->setImportDir(array(
+            $this->getAbsolutePath(),
+            dirname($dir),
+        ));
     }
 
 }
