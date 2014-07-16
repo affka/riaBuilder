@@ -100,7 +100,7 @@ See package.json format example:
                 "type": "module",
 
                 // Relative path to module dir or package.json file
-                "files": "module/customapp",
+                "path": "module/customapp",
 
                 // Set this params as default for module
                 "wrap": false,
